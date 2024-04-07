@@ -1,6 +1,6 @@
 package dev.kissed.snakegame
 
-import App
+import dev.kissed.snake.App
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
