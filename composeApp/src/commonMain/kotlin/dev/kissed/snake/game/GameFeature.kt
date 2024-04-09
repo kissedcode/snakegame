@@ -21,7 +21,7 @@ class GameFeature {
 
     data class GameState(
         val isRunning: Boolean = true,
-        val pace: Long = 100, // ms per tick
+        val pace: Long = 300, // ms per tick
         val size: Int = 20,
         val snake: List<Point> = ArrayList(
             Point(0, 0).let { start ->
@@ -30,6 +30,7 @@ class GameFeature {
         ),
         val food: Point = Point(size / 2, size / 2),
         val direction: Direction = Direction.RIGHT,
+        val score: Int = 0,
     ) {
         val field: List<List<GameItemState>> by lazy {
             (0 until size).map { y ->
@@ -96,10 +97,13 @@ class GameFeature {
         } else {
             state.food
         }
+        
+        val newScore = if (goal) state.score + 1 else state.score
 
         state = state.copy(
             snake = newSnake,
-            food = newFood
+            food = newFood,
+            score = newScore,
         )
     }
 

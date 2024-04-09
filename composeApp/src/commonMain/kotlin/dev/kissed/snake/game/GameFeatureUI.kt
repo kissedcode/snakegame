@@ -3,7 +3,11 @@ package dev.kissed.snake.game
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.drag
+import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,10 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.focusTarget
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -28,6 +29,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import dev.kissed.snake.models.Direction
 import dev.kissed.snake.ui.AppColors
+import kotlin.math.abs
 
 @Composable
 fun GameFeatureUI(feature: GameFeature) {
@@ -36,10 +38,7 @@ fun GameFeatureUI(feature: GameFeature) {
         Modifier
             .fillMaxSize()
             .background(AppColors.gameBackground)
-//            .drawBehind { 
-//                drawLine(Color.Red, start = Offset.Zero, end = Offset(size.width, size.height))
-//                drawLine(Color.Red, start = Offset(0f, size.height), end = Offset(size.width, 0f))
-//            }
+            .padding(16.dp)
             .focusTarget()
             .onKeyEvent { 
                 if (it.type == KeyEventType.KeyDown) {
@@ -57,18 +56,33 @@ fun GameFeatureUI(feature: GameFeature) {
                 return@onKeyEvent false
             }
             .pointerInput(Unit) {
-                val k = size.height.toFloat() / size.width.toFloat()
-                detectTapGestures { tap ->
-                    val lineOne = tap.y - tap.x * k
-                    val lineTwo = tap.y - (-tap.x * k + size.height)
-                    val tapDirection = when {
-                        lineOne < 0 && lineTwo < 0 -> Direction.UP
-                        lineOne < 0 && lineTwo >= 0 -> Direction.RIGHT
-                        lineOne >= 0 && lineTwo >= 0 -> Direction.DOWN
-                        lineOne >= 0 && lineTwo < 0 -> Direction.LEFT
-                        else -> error("impossible")
+//                val k = size.height.toFloat() / size.width.toFloat()
+//                detectTapGestures { tap ->
+//                    val lineOne = tap.y - tap.x * k
+//                    val lineTwo = tap.y - (-tap.x * k + size.height)
+//                    val tapDirection = when {
+//                        lineOne < 0 && lineTwo < 0 -> Direction.UP
+//                        lineOne < 0 && lineTwo >= 0 -> Direction.RIGHT
+//                        lineOne >= 0 && lineTwo >= 0 -> Direction.DOWN
+//                        lineOne >= 0 && lineTwo < 0 -> Direction.LEFT
+//                        else -> error("impossible")
+//                    }
+//                    feature.dispatch(GameFeature.Action.ChangeDirection(tapDirection))
+//                }
+                awaitEachGesture { 
+                    val down = awaitFirstDown()
+                    var direction: Direction? = null
+                    drag(down.id) {
+                        val dx = it.position.x - it.previousPosition.x
+                        val dy = it.position.y - it.previousPosition.y
+                        
+                        direction = if (abs(dx) > abs(dy)) {
+                            if (dx > 0) Direction.RIGHT else Direction.LEFT
+                        } else {
+                            if (dy > 0) Direction.DOWN else Direction.UP
+                        }
                     }
-                    feature.dispatch(GameFeature.Action.ChangeDirection(tapDirection))
+                    direction?.let { feature.dispatch(GameFeature.Action.ChangeDirection(it)) }
                 }
             },
         contentAlignment = Alignment.Center,
@@ -80,7 +94,7 @@ fun GameFeatureUI(feature: GameFeature) {
 @Composable
 private fun GameFieldUI(state: GameFeature.GameState) {
     Column {
-        Text(state.direction.name)
+        Text("Score: ${state.score}")
         Box(
             Modifier.size(400.dp)
                 .border(BorderStroke(2.dp, AppColors.gameBrush))
