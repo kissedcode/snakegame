@@ -21,11 +21,11 @@ class GameFeature {
 
     data class GameState(
         val isRunning: Boolean = true,
-        val pace: Long = 300, // ms per tick
+        val pace: Long = 1000, // ms per tick
         val size: Int = 20,
         val snake: List<Point> = ArrayList(
             Point(0, 0).let { start ->
-                (0..INITIAL_SNAKE_SIZE).map { start.copy(x = it) }
+                ((INITIAL_SNAKE_SIZE - 1) downTo 0).map { start.copy(x = it) }
             }
         ),
         val food: Point = Point(size / 2, size / 2),
