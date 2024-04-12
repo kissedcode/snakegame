@@ -5,10 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.drag
-import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -95,21 +95,24 @@ fun GameFeatureUI(feature: GameFeature) {
 private fun GameFieldUI(state: GameFeature.GameState) {
     Column {
         Text("Score: ${state.score}")
-        Box(
-            Modifier.size(400.dp)
-                .border(BorderStroke(2.dp, AppColors.gameBrush))
-                .padding(4.dp),
-        ) {
-            Column {
-                state.field.forEach { row ->
-                    Row(
-                        Modifier.weight(1f)
-                    ) {
-                        row.forEach { item ->
-                            Box(
-                                Modifier.weight(1f)
-                            ) {
-                                GameItem(item)
+        BoxWithConstraints() {
+            Box(
+                Modifier
+                    .size(minOf(maxHeight, maxWidth))
+                    .border(BorderStroke(2.dp, AppColors.gameBrush))
+                    .padding(4.dp),
+            ) {
+                Column {
+                    state.field.forEach { row ->
+                        Row(
+                            Modifier.weight(1f)
+                        ) {
+                            row.forEach { item ->
+                                Box(
+                                    Modifier.weight(1f)
+                                ) {
+                                    GameItem(item)
+                                }
                             }
                         }
                     }
