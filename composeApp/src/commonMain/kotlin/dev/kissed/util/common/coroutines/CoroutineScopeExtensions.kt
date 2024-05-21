@@ -1,4 +1,4 @@
-package dev.kissed.snake.util.extensions
+package dev.kissed.util.common.coroutines
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

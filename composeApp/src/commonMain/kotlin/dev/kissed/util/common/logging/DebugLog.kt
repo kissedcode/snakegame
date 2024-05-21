@@ -1,4 +1,4 @@
-package dev.kissed.snake.util.logging
+package dev.kissed.util.common.logging
 
 expect object DebugLog {
     fun d(msg: String)

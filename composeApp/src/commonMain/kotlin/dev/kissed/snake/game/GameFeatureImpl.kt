@@ -4,7 +4,7 @@ import dev.kissed.snake.game.GameFeature.Action
 import dev.kissed.snake.game.GameFeature.GameState
 import dev.kissed.snake.models.Direction
 import dev.kissed.snake.models.Point
-import dev.kissed.snake.util.logging.DebugLog
+import dev.kissed.util.common.logging.DebugLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel

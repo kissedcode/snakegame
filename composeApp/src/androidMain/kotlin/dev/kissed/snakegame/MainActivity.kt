@@ -8,7 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import dev.kissed.snake.App
 import dev.kissed.snake.game.GameFeatureImpl
-import dev.kissed.snake.util.logging.DebugLog
+import dev.kissed.util.common.logging.DebugLog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
