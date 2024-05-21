@@ -15,11 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusTarget
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -27,6 +28,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import dev.kissed.snake.game.GameFeature.GameState
 import dev.kissed.snake.models.Direction
 import dev.kissed.snake.ui.AppColors
 import kotlin.math.abs
@@ -40,7 +42,7 @@ fun GameFeatureUI(feature: GameFeature) {
             .background(AppColors.gameBackground)
             .padding(16.dp)
             .focusTarget()
-            .onKeyEvent { 
+            .onKeyEvent {
                 if (it.type == KeyEventType.KeyDown) {
                     when (it.key) {
                         Key.DirectionDown -> Direction.DOWN 
@@ -48,7 +50,7 @@ fun GameFeatureUI(feature: GameFeature) {
                         Key.DirectionRight -> Direction.RIGHT 
                         Key.DirectionLeft -> Direction.LEFT
                         else -> null
-                    }?.let { 
+                    }?.let {
                         feature.dispatch(GameFeature.Action.ChangeDirection(it))
                         return@onKeyEvent true
                     }
@@ -89,10 +91,14 @@ fun GameFeatureUI(feature: GameFeature) {
     ) {
         GameFieldUI(state.value)
     }
+    
+    LaunchedEffect(Unit) { 
+        feature.dispatch(GameFeature.Action.Play)
+    }
 }
 
 @Composable
-private fun GameFieldUI(state: GameFeature.GameState) {
+private fun GameFieldUI(state: GameState) {
     Column {
         Text("Score: ${state.score}")
         BoxWithConstraints() {
@@ -123,7 +129,7 @@ private fun GameFieldUI(state: GameFeature.GameState) {
 }
 
 @Composable
-private fun GameItem(state: GameFeature.GameState.GameItemState) {
+private fun GameItem(state: GameState.GameItemState) {
     Box(
         Modifier
             .fillMaxSize()
